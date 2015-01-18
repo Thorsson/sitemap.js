@@ -19,7 +19,7 @@ Here's an example of using sitemap.js with [express](https://github.com/visionme
 ```javascript
 var express = require('express')
   , sm = require('sitemap');
-  
+
 var app = express.createServer()
   , sitemap = sm.createSitemap ({
       hostname: 'http://example.com',
@@ -78,6 +78,41 @@ sitemap.add({url: '/page-2/', changefreq: 'monthly', priority: 0.7});
 sitemap.del({url: '/page-2/'});
 sitemap.del('/page-1/');
 ```
+
+Example of using sitemap.js to generate video sitemap:
+```javascript
+var express = require('express')
+  , sm = require('sitemap');
+
+var app = express.createServer()
+  , sitemap = sm.createSitemap ({
+      hostname: 'http://example.com',
+      cacheTime: 600000,        // 600 sec - cache purge period
+      urls: [
+        {
+          url: '/page-1/',
+          changefreq: 'daily',
+          priority: 0.3,
+          video: {
+            thumbnailLoc: '/video-page',
+            title: 'Sample Video',
+            description: 'Test Video Sample',
+            playerLoc: '/video-page.player'
+          }
+        },
+      ]
+    });
+
+app.get('/sitemap.xml', function(req, res) {
+  sitemap.toXML( function (xml) {
+      res.header('Content-Type', 'application/xml');
+      res.send( xml );
+  });
+});
+
+app.listen(3000);
+```
+
 
 License
 -------
